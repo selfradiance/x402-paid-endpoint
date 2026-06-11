@@ -13,6 +13,7 @@ import {
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 const payTo = "0x155463b78af48b2db07583c266b18e35bee4eed7";
+const usdcAsset = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const env: Env = {
   CDP_API_KEY_ID: "test-only-unused",
   CDP_API_KEY_SECRET: "test-only-unused",
@@ -21,7 +22,7 @@ const env: Env = {
 const testFacilitator = {
   async getSupported() {
     return {
-      kinds: [{ x402Version: 2, scheme: "exact", network: "eip155:84532" }],
+      kinds: [{ x402Version: 2, scheme: "exact", network: "eip155:8453" }],
       extensions: [],
       signers: {},
     };
@@ -56,8 +57,8 @@ describe("x402 paid endpoint", () => {
     await expect(response.json()).resolves.toMatchObject({
       artifact: "/artifact/vq00.json",
       price: "$1.00",
-      network: "base-sepolia",
-      networkCaip2: "eip155:84532",
+      network: "base",
+      networkCaip2: "eip155:8453",
       payTo,
       x402: {
         version: 2,
@@ -97,8 +98,8 @@ describe("x402 paid endpoint", () => {
         {
           scheme: "exact",
           price: "$1.00",
-          network: "eip155:84532",
-          networkName: "base-sepolia",
+          network: "eip155:8453",
+          networkName: "base",
           payTo,
         },
       ],
@@ -116,8 +117,9 @@ describe("x402 paid endpoint", () => {
     expect(paymentRequired.accepts).toHaveLength(1);
     expect(paymentRequired.accepts[0]).toMatchObject({
       scheme: "exact",
-      network: "eip155:84532",
+      network: "eip155:8453",
       amount: "1000000",
+      asset: usdcAsset,
       payTo,
     });
   });

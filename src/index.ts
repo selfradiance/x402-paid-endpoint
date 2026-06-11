@@ -15,8 +15,11 @@ export interface Env {
 
 const PAY_TO = "0x155463b78af48b2db07583c266b18e35bee4eed7";
 const PRICE = "$1.00";
-const NETWORK = "eip155:84532" as const;
-const NETWORK_NAME = "base-sepolia";
+const PRICE_BASE_UNITS = "1000000";
+const NETWORK = "eip155:8453" as const;
+const NETWORK_NAME = "base";
+const USDC_ASSET = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const USDC_EXTRA = { name: "USD Coin", version: "2" };
 const ARTIFACT_PATH = "/artifact/vq00.json";
 const ARTIFACT_SOURCE =
   "https://selfradiance.github.io/specs/vq00-zion-skank.json";
@@ -56,7 +59,11 @@ const protectedRoutes = {
     accepts: [
       {
         scheme: "exact",
-        price: PRICE,
+        price: {
+          amount: PRICE_BASE_UNITS,
+          asset: USDC_ASSET,
+          extra: USDC_EXTRA,
+        },
         network: NETWORK,
         payTo: PAY_TO,
       },
