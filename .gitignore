@@ -4,3 +4,4 @@ dist/
 .dev.vars
 npm-debug.log*
 .DS_Store
+X402_PAID_ENDPOINT_PROJECT_CONTEXT.md
