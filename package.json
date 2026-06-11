@@ -1,0 +1,29 @@
+{
+  "name": "x402-paid-endpoint",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@coinbase/x402": "2.1.0",
+    "@x402/core": "2.14.0",
+    "@x402/evm": "2.14.0",
+    "@x402/hono": "2.14.0",
+    "hono": "4.12.25"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.16.14",
+    "@cloudflare/workers-types": "4.20260611.1",
+    "@types/node": "25.9.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.8",
+    "wrangler": "4.99.0"
+  }
+}
