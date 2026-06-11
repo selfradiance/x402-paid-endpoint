@@ -5,3 +5,5 @@ dist/
 npm-debug.log*
 .DS_Store
 X402_PAID_ENDPOINT_PROJECT_CONTEXT.md
+buyer/.wallet.json
+buyer/.spend-receipt/

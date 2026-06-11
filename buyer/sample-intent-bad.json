@@ -1,0 +1,9 @@
+{
+  "method": "x402",
+  "endpoint_url": "https://x402-paid-endpoint.selfradiance.workers.dev/",
+  "pay_to": "0x0000000000000000000000000000000000000001",
+  "asset": "USDC",
+  "network": "base-sepolia",
+  "amount_base_units": "1000000",
+  "agent_urn": "urn:agent:x402-paid-endpoint-buyer-test"
+}
