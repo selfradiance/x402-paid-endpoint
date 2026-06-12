@@ -12,10 +12,10 @@ import type { Ed25519KeyPair, Intent, Policy } from "x402-spend-receipt";
 import { createPublicClient, http } from "viem";
 import { base } from "viem/chains";
 import { privateKeyToAccount } from "viem/accounts";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const GATED_URL = "https://x402-paid-endpoint.selfradiance.workers.dev/artifact/vq00.json";
+const GATED_URL = "https://x402-license-gateway.selfradiance.workers.dev/license/vq01-restarules";
 const SPEND_RECEIPT_CONFIG_ROOT = "buyer/.spend-receipt-mainnet";
 const SPEND_RECEIPT_CONFIG_DIR = join(SPEND_RECEIPT_CONFIG_ROOT, "x402-spend-receipt");
 const EXPECTED_NETWORK = "eip155:8453";
@@ -127,9 +127,13 @@ try {
     assert(paidResponse.status === 200, "Expected paid retry to return 200, got " + paidResponse.status + ".");
 
     const artifact = await paidResponse.json() as Record<string, unknown>;
+    const receiptTimestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const receiptPath = "buyer/receipt-" + receiptTimestamp + ".json";
+    writeFileSync(receiptPath, JSON.stringify(artifact, null, 2));
+    console.log("Saved artifact receipt: " + receiptPath);
+    console.log(JSON.stringify(artifact, null, 2));
     const paymentResponse = httpClient.getPaymentSettleResponse(name => paidResponse.headers.get(name));
 
-    console.log("Artifact top-level keys: " + Object.keys(artifact).join(", "));
     console.log("Payment response:");
     console.log(JSON.stringify(paymentResponse, null, 2));
 
