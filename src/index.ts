@@ -5,6 +5,10 @@ import {
   type RoutesConfig,
 } from "@x402/core/server";
 import { ExactEvmScheme } from "@x402/evm/exact/server";
+import {
+  bazaarResourceServerExtension,
+  declareDiscoveryExtension,
+} from "@x402/extensions/bazaar";
 import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
 import { Hono, type MiddlewareHandler } from "hono";
 
@@ -21,6 +25,8 @@ const NETWORK_NAME = "base";
 const USDC_ASSET = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const USDC_EXTRA = { name: "USD Coin", version: "2" };
 const ARTIFACT_PATH = "/artifact/vq00.json";
+const ARTIFACT_DESCRIPTION =
+  "One machine-readable Zion Skank creative license artifact sold for $1 USDC on Base mainnet.";
 const ARTIFACT_SOURCE =
   "https://selfradiance.github.io/specs/vq00-zion-skank.json";
 
@@ -54,6 +60,49 @@ const artifact = {
   },
 } as const;
 
+const artifactOutputSchema = {
+  type: "object",
+  properties: {
+    protocol: { type: "string" },
+    type: { type: "string", const: "CreativeLicense" },
+    license: {
+      type: "object",
+      properties: {
+        grant: { type: "string" },
+        royalty: { type: "string" },
+        attribution: { type: "string" },
+        covered_genres: {
+          type: "array",
+          items: { type: "string" },
+        },
+        restrictions: {
+          type: "array",
+          items: { type: "string" },
+        },
+      },
+      required: [
+        "grant",
+        "royalty",
+        "attribution",
+        "covered_genres",
+        "restrictions",
+      ],
+      additionalProperties: false,
+    },
+    verification: {
+      type: "object",
+      properties: {
+        method: { type: "string" },
+        notary_url: { type: "string", format: "uri" },
+      },
+      required: ["method", "notary_url"],
+      additionalProperties: false,
+    },
+  },
+  required: ["protocol", "type", "license", "verification"],
+  additionalProperties: false,
+} satisfies Record<string, unknown>;
+
 const protectedRoutes = {
   [`GET ${ARTIFACT_PATH}`]: {
     accepts: [
@@ -68,8 +117,15 @@ const protectedRoutes = {
         payTo: PAY_TO,
       },
     ],
-    description: "Zion Skank vq00 creative license specification JSON",
+    description: ARTIFACT_DESCRIPTION,
     mimeType: "application/json",
+    serviceName: "Zion Skank License",
+    extensions: declareDiscoveryExtension({
+      output: {
+        example: artifact,
+        schema: artifactOutputSchema,
+      },
+    }),
     unpaidResponseBody: () => ({
       contentType: "application/json",
       body: {
@@ -92,10 +148,9 @@ const protectedRoutes = {
 export function createPaymentMiddlewareWithFacilitator(
   facilitatorClient: FacilitatorClient,
 ): MiddlewareHandler {
-  const server = new x402ResourceServer(facilitatorClient).register(
-    NETWORK,
-    new ExactEvmScheme(),
-  );
+  const server = new x402ResourceServer(facilitatorClient)
+    .register(NETWORK, new ExactEvmScheme())
+    .registerExtension(bazaarResourceServerExtension);
 
   return paymentMiddleware(protectedRoutes, server);
 }
