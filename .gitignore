@@ -9,3 +9,4 @@ buyer/.wallet.json
 buyer/.spend-receipt/
 buyer/.spend-receipt-mainnet/
 buyer/.spend-receipt-testnet/
+buyer/.spend-receipt-mainnet-attestation/
