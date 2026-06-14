@@ -8,3 +8,4 @@ X402_PAID_ENDPOINT_PROJECT_CONTEXT.md
 buyer/.wallet.json
 buyer/.spend-receipt/
 buyer/.spend-receipt-mainnet/
+buyer/.spend-receipt-testnet/
